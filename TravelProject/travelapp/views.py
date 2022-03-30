@@ -1,3 +1,5 @@
+from typing import Union
+
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, generics, status, permissions, filters
 from rest_framework.decorators import action
@@ -6,12 +8,13 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.conf import settings
 from django.views.generic import View
-from .models import User, Post
-from .serializers import UserSerializers, PostSerializer
+from .models import User, Post, Department, Tour, Action, Rating
+from .serializers import UserSerializer, PostSerializer, DepartmentSeriliazer, TourSerializer, \
+    ActionSerializer, RateSerializer
 
 class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
     queryset = User.objects.filter(is_active=True)
-    serializer_class = UserSerializers
+    serializer_class = UserSerializer
 
     def get_permissions(self):
         if self.action == 'get_current_user':
@@ -30,6 +33,58 @@ class AuthInfo(APIView):
         return Response(settings.OAUTH2_INFO, status=status.HTTP_200_OK )
 
 
+class DepartmentViewSet(viewsets.ViewSet, generics.CreateAPIView):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSeriliazer
+
+    def get_queryset(self):
+        query = self.queryset
+
+        kw = self.request.query_params.get('kw')
+        if kw:
+            query = query.filter(name__icontains=kw)
+
+        return query
+
+
+class TourViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
+    queryset = Tour.objects.all()
+    serializer_class = TourSerializer
+
+    def get_queryset(self):
+        query = self.queryset
+
+        kw = self.request.query_params.get('kw')
+        if kw:
+            query = query.filter(name__icontains=kw)
+
+        return query
+
+    @action(methods=['post'], detail=True, url_path='like')
+    def like(self, request, pk):
+        try:
+            action_type = int(request.data['type'])
+        except Union[IndexError, ValueError]:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            action = Action.objects.creat(type=action_type)
+
+            return Response(ActionSerializer(action.data),
+                            status=status.HTTP_200_OK)
+
+    @action(methods=['post'], detail=True, url_path='rate')
+    def rate(self, request, pk):
+        try:
+            rate = int(request.data['rate'])
+        except Union[IndexError, ValueError]:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            r = rate.objects.creat(type=rate)
+
+            return Response(RateSerializer(r.data),
+                            status=status.HTTP_200_OK)
+
+#login facebook
 class PostList(generics.ListAPIView):
 
     serializer_class = PostSerializer

@@ -45,10 +45,12 @@ INSTALLED_APPS = [
     'corsheaders',
     'social_django', # login facebook
     'drf_social_oauth2',# login facebook
-    # 'ckeditor',
-    # 'ckeditor_uploader',
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
+CKEDITOR_UPLOAD_PATH = "images/ckeditor/"
+MEDIA_ROOT = '%s/travelapp/static/' % BASE_DIR
 STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
