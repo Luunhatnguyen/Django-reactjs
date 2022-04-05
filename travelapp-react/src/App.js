@@ -1,22 +1,23 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { Container } from 'react-bootstrap';
-import Body from './layouts/Body'; 
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Header from './layouts/Header';
+import Home from './component/Home';
+import Body from './layouts/Body';
+import Login from './component/Login';
+import Footer from './layouts/Footer';
 
 function App() {
   return (
-  //  <Container>
-  //    <Body>
-  //      <h1>jasdhfsdhfj</h1>
-  //    </Body>
-  //  </Container>
-    <Container>
-      <h1>
-        test appreact mới
-      </h1>
-      <Body>
-      </Body>
-    </Container>
+    <BrowserRouter>
+      <Header />
+      <Routes>
+          <Route path="/logout" element={<Home />} />
+          <Route path='/login' element={<Login/>} />
+      </Routes>
+      <Body/>
+      <Footer/>
+    </BrowserRouter>
   );
 }
 
