@@ -10,7 +10,7 @@ from django.conf import settings
 from django.views.generic import View
 from .models import User, Post, Department, Tour, Action, Rating
 from .serializers import UserSerializer, PostSerializer, DepartmentSeriliazer, TourSerializer, \
-    ActionSerializer, RateSerializer
+    ActionSerializer, RateSerializer, TourDetailSerializer
 
 class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
     queryset = User.objects.filter(is_active=True)
@@ -49,7 +49,7 @@ class DepartmentViewSet(viewsets.ViewSet, generics.CreateAPIView):
 
 class TourViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     queryset = Tour.objects.all()
-    serializer_class = TourSerializer
+    serializer_class = TourDetailSerializer
 
     def get_queryset(self):
         query = self.queryset

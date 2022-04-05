@@ -80,7 +80,14 @@ class TourSerializer(ModelSerializer):
     class Meta:
         model = Tour
         fields = ['name_tour', 'address', 'phone', 'imageTour',
-                  'departments', 'transports', 'hotels', 'imageTour', 'image', 'arrivals']
+                  'transports', 'hotels', 'imageTour', 'arrivals']
+
+
+class TourDetailSerializer(ModelSerializer):
+    class Meta:
+        model = Tour
+        fields = TourSerializer.Meta.fields
+
 
 class ActionSerializer(ModelSerializer):
     class Meta:

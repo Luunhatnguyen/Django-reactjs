@@ -108,13 +108,13 @@ INTERNAL_IPS = [
 ROOT_URLCONF = 'travelproject.urls'
 
 OAUTH2_INFO = {
-    "id": 'Tv69E4q1eCW6Ot0oFTveJRvTFrMJAXSsLuvYP93x',
-    "secret": 'huCxBhEpbeIBVqypg2nBeE0nV8XJ8iCxpP9fdjLvPuS0ntIwAEHqFjbh0WxNe1KoOWjsL8yNYHnFBfT1D55OO0ywduGyTzwH5gDMY8IPSb6fupBYsocU9h3tHZvv7nB8'
+    "client_id": 'Tv69E4q1eCW6Ot0oFTveJRvTFrMJAXSsLuvYP93x',
+    "client_secret": 'huCxBhEpbeIBVqypg2nBeE0nV8XJ8iCxpP9fdjLvPuS0ntIwAEHqFjbh0WxNe1KoOWjsL8yNYHnFBfT1D55OO0ywduGyTzwH5gDMY8IPSb6fupBYsocU9h3tHZvv7nB8'
 }
 
-# OAUTH2_PROVIDER = {
-#
-# }
+OAUTH2_PROVIDER = {
+    'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore'
+}
 
 TEMPLATES = [
     {
