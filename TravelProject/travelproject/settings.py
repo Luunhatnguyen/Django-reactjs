@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
 ]
 
-CKEDITOR_UPLOAD_PATH = "images/ckeditor/"
+CKEDITOR_UPLOAD_PATH = "user/images/"
 MEDIA_ROOT = '%s/travelapp/static/' % BASE_DIR
 STATIC_URL = '/static/'
 

@@ -3,7 +3,9 @@ import axios from "axios"
 export let endpoints = {
     "oauth2-info": "/oauth2-info/",
     "login": "/o/token/",
-    "current-user": "/users/current-user/"
+    "current-user": "/users/current-user/", 
+    "register": "/users/",
+    "tour": "/tour/"
 }
 
 export default axios.create({

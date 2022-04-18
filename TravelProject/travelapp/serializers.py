@@ -1,20 +1,29 @@
 from rest_framework import serializers
-from .models import User, Post, Department, Tour, Hotel, Transport, Arrival, Action, Rating
-from rest_framework.serializers import ModelSerializer
+from .models import User, Department, Tour, Hotel, Transport, Arrival, Action, Rating, TourGuide
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 class UserSerializer(serializers.ModelSerializer):
-    avatar_path = serializers.SerializerMethodField(source='avatar')
+    avatar = serializers.SerializerMethodField(source='avatar')
 
-    def get_avatar_path(self, obj):
+    # avatar_path = serializers.SerializerMethodField()
+    def get_avatar_path(self, user):
         request = self.context['request']
-        if obj.avatar and not obj.avatar.name.startswith('/static'):
-            path = '/static/%s' % obj.avatar.name
+        if user.avatar and not user.avatar.name.startswith('/static'):
+            path = '/static/%s' % user.avatar.name
 
             return request.build_absolute_uri(path)
 
+
+    def create(self, validated_data):
+        user = User(**validated_data)
+        user.set_password(user.password)
+        user.save()
+
+        return user
+
     class Meta:
         model = User
-        fields = ['username', 'password', 'first_name', 'last_name', 'email', 'avatar', 'avatar_path']
+        fields = ['username', 'password', 'first_name', 'last_name', 'email', 'avatar_path']
         extra_kwargs = {
             'password': {
                 'write_only': True
@@ -25,21 +34,12 @@ class UserSerializer(serializers.ModelSerializer):
             }
         }
 
-    def create(self, validated_data):
-        data = validated_data.copy()
 
-        u = User(**data)
-        u.set_password(u.password)
-        u.save()
-
-        return u
-
-
-class PostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-        fields = ('category', 'id', 'title', 'image', 'slug', 'author',
-                  'excerpt', 'content', 'status')
+# class PostSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Post
+#         fields = ('category', 'id', 'title', 'image', 'slug', 'author',
+#                   'excerpt', 'content', 'status')
 
 class DepartmentSeriliazer(ModelSerializer):
     class Meta:
@@ -53,6 +53,16 @@ class HotelSerializer(ModelSerializer):
         model = Hotel
         fields = ['id', 'name_hotel']
 
+class ArrivalSerializer(ModelSerializer):
+    class Meta:
+        model = Arrival
+        fields = ['name_arrival', 'address']
+
+class TourguideSerializer(ModelSerializer):
+    class Meta:
+        model = TourGuide
+        fields = ['imageTourGuide', 'department']
+
 class TransportSerializer(ModelSerializer):
     class Meta:
         model = Transport
@@ -65,22 +75,23 @@ class ArrivalSerializer(ModelSerializer):
 
 class TourSerializer(ModelSerializer):
     image = serializers.SerializerMethodField(source='imageTour')
-    departments = DepartmentSeriliazer(many=True)
+    # departments = DepartmentSeriliazer(many=True)
     transports = TransportSerializer(many=True)
     hotels = HotelSerializer(many=True)
     arrivals = ArrivalSerializer(many=True)
 
     def get_image(self, obj):
-        request = self.context['request']
-        if obj.image and not obj.image.name.startswith('/static'):
-            path = '/static/%s' % obj.image.name
-
-            return request.build_absolute_uri(path)
+        pass
+    #     request = self.context['request']
+    #     if obj.image and not obj.image.name.startswith('/static'):
+    #         path = '/static/%s' % obj.image.name
+    #
+    #         return request.build_absolute_uri(path)
 
     class Meta:
         model = Tour
         fields = ['name_tour', 'address', 'phone', 'imageTour',
-                  'transports', 'hotels', 'imageTour', 'arrivals']
+                  'transports', 'hotels', 'image', 'arrivals']
 
 
 class TourDetailSerializer(ModelSerializer):

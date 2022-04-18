@@ -6,18 +6,11 @@ import Home from './component/Home';
 import Body from './layouts/Body';
 import Login from './component/Login';
 import Footer from './layouts/Footer';
+import { Container } from 'react-bootstrap';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Header />
-      <Routes>
-          <Route path="/logout" element={<Home />} />
-          <Route path='/login' element={<Login/>} />
-      </Routes>
-      <Body/>
-      <Footer/>
-    </BrowserRouter>
+    <Body></Body>
   );
 }
 
