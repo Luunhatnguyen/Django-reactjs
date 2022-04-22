@@ -3,36 +3,22 @@ from .models import User, Department, Tour, Hotel, Transport, Arrival, Action, R
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 class UserSerializer(serializers.ModelSerializer):
-    avatar = serializers.SerializerMethodField(source='avatar')
-
-    # avatar_path = serializers.SerializerMethodField()
-    def get_avatar_path(self, user):
-        request = self.context['request']
-        if user.avatar and not user.avatar.name.startswith('/static'):
-            path = '/static/%s' % user.avatar.name
-
-            return request.build_absolute_uri(path)
-
-
-    def create(self, validated_data):
-        user = User(**validated_data)
-        user.set_password(user.password)
-        user.save()
-
-        return user
-
     class Meta:
         model = User
-        fields = ['username', 'password', 'first_name', 'last_name', 'email', 'avatar_path']
+        fields = ['username', 'password', 'first_name', 'avatar',
+                  'last_name', 'email', 'date_joined', 'id']
         extra_kwargs = {
-            'password': {
-                'write_only': True
-            }, 'avatar_path': {
-                'read_only': True
-            }, 'avatar': {
-                'write_only': True
-            }
+            'password': {'write_only': 'true'}
         }
+
+    def create(self, validated_data):
+        data = validated_data.copy()
+
+        u = User(**data)
+        u.set_password(u.password)
+        u.save()
+
+        return u
 
 
 # class PostSerializer(serializers.ModelSerializer):

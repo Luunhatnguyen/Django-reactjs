@@ -4,6 +4,7 @@ from django.urls import path
 from django.utils.html import mark_safe
 from django.template.response import TemplateResponse
 from django.db.models import Count
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 class TourAdmin(admin.ModelAdmin):
     list_display = ("id", "name_tour", "active")

@@ -1,5 +1,6 @@
 from typing import Union
 from django.shortcuts import render, get_object_or_404
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, generics, status, permissions, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -15,6 +16,7 @@ from .serializers import UserSerializer, DepartmentSeriliazer, TourSerializer, \
 class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
     queryset = User.objects.filter(is_active=True)
     serializer_class = UserSerializer
+    parser_classes = [MultiPartParser, ]
 
     def get_permissions(self):
         if self.action == 'get_current_user':
@@ -22,7 +24,7 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
 
         return [permissions.AllowAny()]
 
-    @action(methods=['get'], detail=False, url_path="current-user")
+    @action(methods=['get'], detail=False, url_path='current-user')
     def get_current_user(self, request):
         return Response(self.serializer_class(request.user).data,
                         status=status.HTTP_200_OK)
@@ -93,18 +95,42 @@ class ArrivalViewSet(viewsets.ViewSet, generics.CreateAPIView):
 
         return query
 
-class TourViewSet(viewsets.ViewSet, generics.ListAPIView):
-    queryset = Tour.objects.all()
+class TourViewSet(viewsets.ViewSet, APIView):
+    queryset = Tour.objects.filter(active=True)
     serializer_class = TourSerializer
 
-    def get_queryset(self):
-        query = self.queryset
+    @swagger_auto_schema(
+        operation_description='Get the lessons of a course',
+        responses={
+            status.HTTP_200_OK: TourSerializer()
+        }
+    )
 
-        kw = self.request.query_params.get('kw')
-        if kw:
-            query = query.filter(name__icontains=kw)
+    # def get_queryset(self):
+    #     query = self.queryset
+    #
+    #     kw = self.request.query_params.get('kw')
+    #     if kw:
+    #         query = query.filter(name__icontains=kw)
+    #
+    #     tour_id = self.request.query_params.get('tour_id')
+    #     if tour_id:
+    #         query = query.filter(tour_id=tour_id)
+    #
+    #     return query
 
-        return query
+    # @action(methods=['get'], detail=True, url_path='tours')
+    # def get_tour_detail(self, request, pk):
+    #     tours = self.get_object()
+    #     kw = request.query_params.get('kw')
+    #
+    #     if kw:
+    #         tour = tours.filter(subject__icontains=kw)
+    #
+    #     return Response(data=TourSerializer(tour, many=True, context={'request': request}).data,
+    #              status=status.HTTP_200_OK)
+
+
 
     @action(methods=['post'], detail=True, url_path='like')
     def like(self, request, pk):

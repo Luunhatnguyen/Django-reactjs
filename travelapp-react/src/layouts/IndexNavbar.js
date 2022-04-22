@@ -1,16 +1,20 @@
-import React from "react";
+import React, { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import classnames from "classnames";
-import {NavbarBrand, Navbar, NavItem, NavLink, Container, Form } from "react-bootstrap";
+import {NavbarBrand, Navbar, NavItem, NavLink, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import cookies from "react-cookies"
 import { logoutUser } from "../ActionCreators/UserCreators";
+import { Container, FormControl, Nav, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 function IndexNavbar() {
     const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
     const [navbarCollapse, setNavbarCollapse] = React.useState(false);
     const user = useSelector(state => state.user.user)
     const dispatch = useDispatch()
+    const [q, setQ] = useState("")
     const toggleNavbarCollapse = () => {
       setNavbarCollapse(!navbarCollapse);
       document.documentElement.classList.toggle("nav-open");
@@ -36,6 +40,11 @@ function IndexNavbar() {
           window.removeEventListener("scroll", updateNavbarColor);
         };
       });
+          const search = (event) => {
+            event.preventDefault()
+            Navigate(`/?q=${q}`)
+        }
+
         const logout = (event) => {
             event.preventDefault()
     
@@ -54,48 +63,66 @@ function IndexNavbar() {
             </>
     }
       return (
-        <Navbar className={classnames("fixed-top", navbarColor)} expand="lg" >
-          <Container>
-            <div className="navbar-translate">
-              <NavbarBrand
-                data-placement="bottom"
-                href="/index"
-                target="_blank"
-                title="Coded by Creative Tim"
-              >
-                Travel Tour
-              </NavbarBrand>
+        // <Navbar className={classnames("fixed-top", navbarColor)} expand="lg" >
+        //   <Container>
+        //     <div className="navbar-translate">
+        //       <NavbarBrand
+        //         data-placement="bottom"
+        //         href="/index"
+        //         target="_blank"
+        //         title="Coded by Creative Tim"
+        //       >
+        //         Travel Tour
+        //       </NavbarBrand>
             
-            </div>
+        //     </div>
             
-                <NavItem >
-                  <NavLink
-                    href="https://demos.creative-tim.com/paper-kit-react/#/documentation?ref=pkr-index-navbar"
-                    target="_blank"
-                    className="text-success" 
-                  >
-                     Documentation
-                  </NavLink>
-                </NavItem>
-            <NavItem>
-                  <NavLink
-                    href="https://demos.creative-tim.com/paper-kit-react/#/documentation?ref=pkr-index-navbar"
-                    target="_blank"
-                    className="text-success" 
-                  >
-                    Documentation
-                  </NavLink>
-            </NavItem>
-            <NavItem > 
-                <NavLink 
-                  >
-                  {/* {path} */}
-                </NavLink>
+        //         <NavItem >
+        //           <NavLink
+        //             href="https://demos.creative-tim.com/paper-kit-react/#/documentation?ref=pkr-index-navbar"
+        //             target="_blank"
+        //             className="text-success" 
+        //           >
+        //              Documentation
+        //           </NavLink>
+        //         </NavItem>
+        //     <NavItem>
+        //           <NavLink
+        //             href="https://demos.creative-tim.com/paper-kit-react/#/documentation?ref=pkr-index-navbar"
+        //             target="_blank"
+        //             className="text-success" 
+        //           >
+        //             Documentation
+        //           </NavLink>
+        //     </NavItem>
+        //     <NavItem > 
+        //         <NavLink 
+        //           >
+        //           {path}
+        //         </NavLink>
                
-            </NavItem>
-          </Container>
+        //     </NavItem>
+        //   </Container>
+        // </Navbar>
+        <Navbar>
+            <Container>
+                <Navbar.Brand bg="light" expand="lg">TravelApp</Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="me-auto">
+                        <Link className="nav-link" to="/">Trang chủ</Link>
+                        <Link className="nav-link" to="/tour">Tour</Link>
+                        {path} 
+                    </Nav>
+                    <Form className="d-flex" onSubmit={search}>
+                        <FormControl type="search" placeholder="Nhap tu khoa..."
+                        className = "mr-2" aria-label="Search" value={q}
+                        onChange={ (event) => setQ(event.target.value)} />
+                        <Button type="submit" variant="outline-success">Tim kiem</Button>
+                    </Form>
+                </Navbar.Collapse>
+            </Container>
         </Navbar>
-        
       );
     }
     

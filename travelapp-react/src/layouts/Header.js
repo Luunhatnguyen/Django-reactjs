@@ -40,7 +40,6 @@ export default function Header(){
 
     }
 
-    const [tour, setTour] = useState([])
 
     return(
         <Navbar>

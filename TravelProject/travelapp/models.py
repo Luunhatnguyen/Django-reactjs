@@ -6,7 +6,7 @@ import datetime
 
 
 class User(AbstractUser):
-    avatar = models.ImageField(null=True, blank=True, upload_to='user/%Y/%m')
+    avatar = models.ImageField(null=True, upload_to='users/%Y/%m')
 
 
 #login bằng email
