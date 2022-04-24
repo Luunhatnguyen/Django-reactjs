@@ -88,6 +88,13 @@ class Department(ModelBase):
         return self.name_department
 
 
+class Category(ModelBase):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class TourGuide(ModelBase):
     name_tourguide = models.TextField()
     address = models.TextField()

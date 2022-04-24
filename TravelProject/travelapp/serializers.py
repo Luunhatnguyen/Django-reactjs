@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Department, Tour, Hotel, Transport, Arrival, Action, Rating, TourGuide
+from .models import User, Department, Tour, Hotel, Transport, Arrival, Action, Rating, TourGuide,Category
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 class UserSerializer(serializers.ModelSerializer):
@@ -26,6 +26,13 @@ class UserSerializer(serializers.ModelSerializer):
 #         model = Post
 #         fields = ('category', 'id', 'title', 'image', 'slug', 'author',
 #                   'excerpt', 'content', 'status')
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
+
 
 class DepartmentSeriliazer(ModelSerializer):
     class Meta:

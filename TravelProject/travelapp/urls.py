@@ -4,6 +4,7 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(prefix='users', viewset=views.UserViewSet, basename='user')
+router.register(prefix='categories', viewset=views.CategoryViewset, basename='category')
 router.register(prefix='departments', viewset=views.DepartmentViewSet, basename='department')
 router.register(prefix='tours', viewset=views.TourViewSet, basename='tour')
 router.register(prefix='tourguides', viewset=views.TourguideViewSet, basename='tourguide')

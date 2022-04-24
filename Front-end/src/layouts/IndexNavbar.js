@@ -1,17 +1,29 @@
 import React from "react";
+import { useState ,useEffect } from "react";
 import classnames from "classnames";
 import {NavbarBrand, Navbar, NavItem, NavLink, Container, Form, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import cookies from "react-cookies"
 import { logoutUser } from "../ActionCreators/UserCreators";
+import Api, { endpoints } from '../configs/Apis';
 
 function IndexNavbar() {
     const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
     const [navbarCollapse, setNavbarCollapse] = React.useState(false);
     const user = useSelector(state => state.user.user)
     const dispatch = useDispatch()
+    const [categories, setCategories] = useState([])
+    
+    useEffect(() => {
+      let loadCategories = async () => {
+          let res = await Api.get(endpoints['categories'])
 
+          setCategories(res.data)
+      }
+      
+      loadCategories()
+      }, [])
 
     const toggleNavbarCollapse = () => {
       setNavbarCollapse(!navbarCollapse);
@@ -59,7 +71,7 @@ function IndexNavbar() {
                       <img className='avt' src={'/static' + user.avatar} alt='avatar'/>{user.username}
                   </Link>
               </div>
-              <Link className='nav-link text-danger' to='#' onClick={logout}>Logout</Link>
+              <Link className='nav-link text-success' to='#' onClick={logout}>Logout</Link>
           </>
       }
       return (
@@ -71,36 +83,24 @@ function IndexNavbar() {
               >
                 TravelTour
               </NavbarBrand>
+              <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav"></Navbar.Collapse>
             </div>
 
-              <NavItem >
-                  <Link className="nav-link text-success" to="/">Trang chu</Link>
-              </NavItem>
 
-              <NavItem >
-                  <NavLink
-                    href="https://demos.creative-tim.com/paper-kit-react/#/documentation?ref=pkr-index-navbar"
-                    target="_blank"
-                    className="text-success" 
-                  >
-                     Documentation
-                  </NavLink>
-                </NavItem>
-            <NavItem>
-                  <NavLink
-                    href="https://demos.creative-tim.com/paper-kit-react/#/documentation?ref=pkr-index-navbar"
-                    target="_blank"
-                    className="text-success" 
-                  >
-                    Documentation
-                  </NavLink>
-            </NavItem>
-            <NavItem > 
+              <Nav className="me-auto">
+                  <Link className="nav-link text-success" to="/">Trang chu</Link>
+                  {categories.map(c => {
+                    let path = `/?category_id=${c.id}`
+                    return <Link className="nav-link text-success" to={path}>{c.name}</Link>
+                  })
+                  }
+              </Nav>
+              <NavItem>
                 <NavLink  >
                  {path}
                 </NavLink>
-               
-            </NavItem>
+                </NavItem>
           </Container>
         </Navbar>
         

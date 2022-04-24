@@ -8,10 +8,10 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.conf import settings
 from django.views.generic import View
-from .models import User, Department, Tour, Action, TourGuide, Hotel, Arrival
+from .models import User, Department, Tour, Action, TourGuide, Hotel, Arrival ,Category
 from .serializers import UserSerializer, DepartmentSeriliazer, TourSerializer, \
     ActionSerializer, RateSerializer, TourDetailSerializer, TourguideSerializer, \
-    HotelSerializer, ArrivalSerializer
+    HotelSerializer, ArrivalSerializer ,CategorySerializer
 
 class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
     queryset = User.objects.filter(is_active=True)
@@ -33,6 +33,20 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
 class AuthInfo(APIView):
     def get(self, request):
         return Response(settings.OAUTH2_INFO, status=status.HTTP_200_OK )
+
+
+class CategoryViewset(viewsets.ViewSet, generics.ListAPIView):
+    queryset = Category.objects.filter(active=True)
+    serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        q = self.queryset
+
+        kw = self.request.query_params.get('kw')
+        if kw:
+            q = q.filter(name__icontains=kw)
+
+        return q
 
 
 class DepartmentViewSet(viewsets.ViewSet, generics.CreateAPIView):

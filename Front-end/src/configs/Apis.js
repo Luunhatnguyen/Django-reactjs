@@ -2,6 +2,7 @@ import axios from "axios";
 import { combineReducers } from "redux";
 
 export let endpoints = {
+    "categories": "/categories/",
     'oauth2-info': '/oauth2-info/',
     'login': '/o/token/',
     'current-user': '/users/current-user/',
