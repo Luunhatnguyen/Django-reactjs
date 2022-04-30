@@ -1,20 +1,24 @@
 import React from "react";
 import { useState ,useEffect } from "react";
 import classnames from "classnames";
-import {NavbarBrand, Navbar, NavItem, NavLink, Container, Form, Nav } from "react-bootstrap";
+import {NavbarBrand, Navbar, NavItem, NavLink, Container,  Nav, Form, FormControl } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import cookies from "react-cookies"
 import { logoutUser } from "../ActionCreators/UserCreators";
 import Api, { endpoints } from '../configs/Apis';
+import { Button } from "bootstrap";
+import { useNavigate } from 'react-router-dom';
 
-function IndexNavbar() {
-    const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
-    const [navbarCollapse, setNavbarCollapse] = React.useState(false);
+export default function IndexNavbar() {
+    const [navbarColor, setNavbarColor] = useState("navbar-transparent");
+    const [navbarCollapse, setNavbarCollapse] = useState(false);
     const user = useSelector(state => state.user.user)
     const dispatch = useDispatch()
     const [categories, setCategories] = useState([])
-    
+    const [q, setQ] = useState("")
+    const navigate = useNavigate()
+
     useEffect(() => {
       let loadCategories = async () => {
           let res = await Api.get(endpoints['categories'])
@@ -29,7 +33,7 @@ function IndexNavbar() {
       setNavbarCollapse(!navbarCollapse);
       document.documentElement.classList.toggle("nav-open");
     };
-    React.useEffect(() => {
+    useEffect(() => {
         const updateNavbarColor = () => {
           if (
             document.documentElement.scrollTop > 299 ||
@@ -50,14 +54,20 @@ function IndexNavbar() {
           window.removeEventListener("scroll", updateNavbarColor);
         };
       });
+
+      
             const logout = (event) => {
-            event.preventDefault()
+                  event.preventDefault()
 
-            cookies.remove('access_token')
-            cookies.remove('user')
-            dispatch(logoutUser())
-        }
+                  cookies.remove('access_token')
+                  cookies.remove('user')
+                  dispatch(logoutUser())
+              }
 
+            const search = (event) => {
+                event.preventDefault()
+                navigate(`/?q=${q}`)
+            }
         let path = <>
             <Link className='nav-link text-success' to='/login'>Login</Link>
             <Link className='nav-link text-success' to='/register'>Register</Link>
@@ -83,13 +93,11 @@ function IndexNavbar() {
               >
                 TravelTour
               </NavbarBrand>
-              <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav"></Navbar.Collapse>
             </div>
-
-
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="me-auto">
-                  <Link className="nav-link text-success" to="/">Trang chu</Link>
+                  <Link className="nav-link text-success" to="/">Trang chủ</Link>
                   {categories.map(c => {
                     let path = `/?category_id=${c.id}`
                     return <Link className="nav-link text-success" to={path}>{c.name}</Link>
@@ -100,11 +108,23 @@ function IndexNavbar() {
                 <NavLink  >
                  {path}
                 </NavLink>
-                </NavItem>
+              </NavItem>
+              
+                {/* <Form className="d-flex" onSubmit={search}>
+                    <FormControl
+                      type="search"
+                      placeholder="Nhap tu khoa..."
+                      className="mr-2"
+                      aria-label="Search"
+                      value={q}
+                      onChange={(event) => setQ(event.target.value)}
+                    />
+                    <Button type="submit" variant="outline-success">Tim</Button>
+                </Form>
+               */}
+              </Navbar.Collapse> 
           </Container>
         </Navbar>
         
       );
     }
-    
-    export default IndexNavbar;

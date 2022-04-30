@@ -7,6 +7,8 @@ import IndexHeader from '../layouts/IndexHeader';
 import Home from '../pages/Home';
 import IndexNavbar from '../layouts/IndexNavbar';
 import Footer from '../layouts/Footer';
+import Tour from '../pages/Tour';
+import TourDetail from '../pages/TourDetail';
 
 export default function Body() {
     return (
@@ -16,6 +18,7 @@ export default function Body() {
                 <Routes>
                     <Route path ='/' element ={<Home />} /> 
                     <Route  path ='/login' element ={<Login />} />
+                    <Route  path ='/tourdetail/:tourId/' element ={<TourDetail />} />
                     <Route  path ='/register' element ={<Register />} />
                 </Routes> 
                 <Footer />

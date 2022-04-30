@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import User, Department, Tour, Hotel, Transport, Arrival, Action, Rating, TourGuide,Category
+from .models import User, Tour, Category, Tag, Comment, Rating, TourView,Action \
+    # Hotel, Transport, Arrival, TourGuide,Department
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 class UserSerializer(serializers.ModelSerializer):
@@ -33,72 +34,123 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = "__all__"
 
+#
+# class DepartmentSeriliazer(ModelSerializer):
+#     class Meta:
+#         model = Department
+#         fileds = "__all__"
+#         exclude = ['active']
+#
+#
+# class HotelSerializer(ModelSerializer):
+#     class Meta:
+#         model = Hotel
+#         fields = ['id', 'name_hotel']
+#
+# class ArrivalSerializer(ModelSerializer):
+#     class Meta:
+#         model = Arrival
+#         fields = ['name_arrival', 'address']
 
-class DepartmentSeriliazer(ModelSerializer):
-    class Meta:
-        model = Department
-        fileds = "__all__"
-        exclude = ['active']
+
+# class TourguideSerializer(ModelSerializer):
+#     image = serializers.SerializerMethodField(source='image')
+#     tags = TagSeriazlier(many=True)
+#
+#     def get_image(self, obj):
+#         request = self.context['request']
+#         # if obj.image and obj.image.name.startswith("/static"):
+#         #     pass
+#         # else:
+#         path = '/static/%s' % obj.image.name
+#
+#         return request.build_absolute_uri(path)
+#
+#     class Meta:
+#         model = TourGuide
+#         fields = ['imageTourGuide','created_date', 'updated_date','department','tags']
 
 
-class HotelSerializer(ModelSerializer):
-    class Meta:
-        model = Hotel
-        fields = ['id', 'name_hotel']
+# class TransportSerializer(ModelSerializer):
+#     class Meta:
+#         model = Transport
+#         fields = ['id', 'name_transport', 'seat']
+#
+# class ArrivalSerializer(ModelSerializer):
+#     class Meta:
+#         model = Arrival
+#         fields = ['id', 'name_arrival']
 
-class ArrivalSerializer(ModelSerializer):
-    class Meta:
-        model = Arrival
-        fields = ['name_arrival', 'address']
+class TourSerializer(serializers.ModelSerializer):
+    # image = serializers.SerializerMethodField(source='imageTour')
+    image = SerializerMethodField()
 
-class TourguideSerializer(ModelSerializer):
-    class Meta:
-        model = TourGuide
-        fields = ['imageTourGuide', 'department']
+    def get_image(self, tours):
+        request = self.context['request']
+        name = tours.image.name
+        if name.startswith('static/'):
+            path = '/%s' % name
+        else:
+            path = '/static/%s' % name
 
-class TransportSerializer(ModelSerializer):
-    class Meta:
-        model = Transport
-        fields = ['id', 'name_transport', 'seat']
-
-class ArrivalSerializer(ModelSerializer):
-    class Meta:
-        model = Arrival
-        fields = ['id', 'name_arrival']
-
-class TourSerializer(ModelSerializer):
-    image = serializers.SerializerMethodField(source='imageTour')
-    # departments = DepartmentSeriliazer(many=True)
-    transports = TransportSerializer(many=True)
-    hotels = HotelSerializer(many=True)
-    arrivals = ArrivalSerializer(many=True)
-
-    def get_image(self, obj):
-        pass
-    #     request = self.context['request']
-    #     if obj.image and not obj.image.name.startswith('/static'):
-    #         path = '/static/%s' % obj.image.name
-    #
-    #         return request.build_absolute_uri(path)
+        return request.build_absolute_uri(path)
 
     class Meta:
         model = Tour
-        fields = ['name_tour', 'address', 'phone', 'imageTour',
-                  'transports', 'hotels', 'image', 'arrivals']
+        fields = '__all__'
 
 
-class TourDetailSerializer(ModelSerializer):
+class TagSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Tour
+        model = Tag
+        fields = '__all__'
+
+
+class TourDetailSerializer(TourSerializer):
+    tags = TagSerializer(many=True)
+    rate = SerializerMethodField()
+
+    def get_rate(self, tour):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            r = tour.rating_set.filter(creator=request.user).first()
+            if r:
+                return r.rate
+
+        return -1
+
+    class Meta:
+        model = TourSerializer.Meta.model
         fields = TourSerializer.Meta.fields
+        fields = [field.name for field in model._meta.fields]
+        fields.append('tags')
+        fields.append('rate')
+
+class RatingSerializer(ModelSerializer):
+    class Meta:
+        model = Rating
+        fields = ["id", "rate", "created_date"]
+
+
+class TourViewSerializer(ModelSerializer):
+    class Meta:
+        model = TourView
+        fields = ["id", "views", "tour"]
 
 
 class ActionSerializer(ModelSerializer):
     class Meta:
         model = Action
-        fields = ["id", "type", "create_date"]
+        fields = ["id", "type", "created_date"]
 
-class RateSerializer(ModelSerializer):
+
+class CommentSerializer(ModelSerializer):
+    creator = SerializerMethodField()
+
+    def get_creator(self, comment):
+        return UserSerializer(comment.creator, context={"request": self.context.get('request')}).data
+
     class Meta:
-        model = Rating
-        fields = ["id", "type", "create_date"]
+        model = Comment
+        fields = ['id', 'content', 'created_date', 'updated_date', 'creator']
+

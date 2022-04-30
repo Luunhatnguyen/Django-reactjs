@@ -1,5 +1,5 @@
 import axios from "axios";
-import { combineReducers } from "redux";
+
 
 export let endpoints = {
     "categories": "/categories/",
@@ -7,10 +7,10 @@ export let endpoints = {
     'login': '/o/token/',
     'current-user': '/users/current-user/',
     'register': '/users/',
-    'posts': '/posts/',
-    'post-detail': (postId) => `/postdetail/${postId}/`,
-    'comments': (postId) => `/posts/${postId}/comments/`,
-    'add-comment': (postId) => `/posts/${postId}/add-comment/`,
+    'tours': '/tours/',
+    'tour-detail': (tourId) => `/tourdetail/${tourId}/`,
+    'comments': (tourId) => `/tours/${tourId}/comments/`,
+    'add-comment': (tourId) => `/tours/${tourId}/add-comment/`,
 }
 
 

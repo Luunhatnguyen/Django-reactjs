@@ -1,5 +1,5 @@
 import { useState ,useEffect } from "react";
-import { Container, FormControl, Navbar, Nav, Button, Form } from "react-bootstrap";
+import { Container, Navbar, Nav } from "react-bootstrap";
 import React from 'react'
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,6 +23,7 @@ export default function Header() {
       
       loadCategories()
       }, [])
+      
     const logout = (event) => {
         event.preventDefault()
 
