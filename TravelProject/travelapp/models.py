@@ -45,39 +45,42 @@ class ModelBase(models.Model):
         abstract = True
 
 
-# class Department(ModelBase):
-#     name_department = models.CharField(max_length=50)
-#     address = models.TextField()
-#     phone = models.TextField()
-#
-#     def __str__(self):
-#         return self.name_department
+class Department(ModelBase):
+    name_department = models.CharField(max_length=50)
+    address = models.TextField()
+    phone = models.TextField()
+
+    def __str__(self):
+        return self.name_department
 
 
-# class TourGuide(ModelBase):
-#     name_tourguide = models.TextField()
-#     address = models.TextField()
-#     phone = models.TextField
-#     imageTourGuide = models.ImageField(null=True, blank=True, upload_to='imageTourGuide/%Y/%m')
-#
-#     # department = models.ForeignKey(Department, related_name="Department", null=True, on_delete=models.SET_NULL)
-#
-#     def __str__(self):
-#         return self.name_tourguide
-#
+class TourGuide(ModelBase):
+    name_tourguide = models.TextField()
+    address = models.TextField()
+    phone = models.TextField
+    imageTourGuide = models.ImageField(null=True, blank=True, upload_to='imageTourGuide/%Y/%m')
+
+    department = models.ForeignKey(Department, related_name="Department", null=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return self.name_tourguide
 
 
 class Tour(ModelBase):
+    class Meta:
+        ordering = ["-id"]
+
     name_tour = models.TextField()
     address = models.TextField()
     phone = models.TextField()
-    image = models.ImageField(null=True, blank=True, upload_to='tours/%Y/%m')
-    content = models.TextField(blank=True, null=True)
-    # tourguide = models.ForeignKey(TourGuide, related_name="Tour", null=True, on_delete=models.SET_NULL)
-    # customers = models.ManyToManyField('Customer')
-    # hotels = models.ManyToManyField('Hotel')
-    # transports = models.ManyToManyField('Transport')
-    # arrivals = models.ManyToManyField('Arrival')
+    imageTour = models.ImageField(null=True, blank=True, upload_to='imageTour/%Y/%m')
+
+    tourguide = models.ForeignKey(TourGuide, related_name="Tour", null=True, on_delete=models.SET_NULL)
+    customers = models.ManyToManyField('Customer')
+    hotels = models.ManyToManyField('Hotel')
+    transports = models.ManyToManyField('Transport')
+    arrivals = models.ManyToManyField('Arrival')
+
     category = models.ForeignKey(Category, related_name='tours', null=True, on_delete=models.SET_NULL)
     tags = models.ManyToManyField('Tag', related_name='tours', blank=True, null=True )
 
@@ -94,51 +97,51 @@ class Tour(ModelBase):
 #         unique_together = ('user', 'tour')
 
 
-# class Ticket(ModelBase):
-#     name_ticket = models.TextField()
-#
-#     department = models.ForeignKey(Department, related_name="department", null=True, on_delete=models.CASCADE)
-#     tour = models.ForeignKey(Tour, related_name="tour", null=True, on_delete=models.SET_NULL)
-#     customers = models.ManyToManyField('Customer')
-#
-#     def __str__(self):
-#         return self.name_ticket
+class Ticket(ModelBase):
+    name_ticket = models.TextField()
+
+    department = models.ForeignKey(Department, related_name="department", null=True, on_delete=models.CASCADE)
+    tour = models.ForeignKey(Tour, related_name="tour", null=True, on_delete=models.SET_NULL)
+    customers = models.ManyToManyField('Customer')
+
+    def __str__(self):
+        return self.name_ticket
 
 
-# class Customer(ModelBase):
-#     name_customer = models.TextField()
-#     address = models.TextField()
-#     iden = models.CharField(max_length=10)
-#
-#     def __str__(self):
-#         return self.name_customer
+class Customer(ModelBase):
+    name_customer = models.TextField()
+    address = models.TextField()
+    iden = models.CharField(max_length=10)
 
-#
-# class Hotel(ModelBase):
-#     name_hotel = models.TextField()
-#     address = models.TextField()
-#
-#     def __str__(self):
-#         return self.name_hotel
+    def __str__(self):
+        return self.name_customer
 
 
-# class Transport(ModelBase):
-#     name_transport = models.TextField()
-#     seat = models.IntegerField()
-#
-#     def __str__(self):
-#         return self.name_transport
-#
+class Hotel(ModelBase):
+    name_hotel = models.TextField()
+    address = models.TextField()
 
-# class Arrival(ModelBase):
-#     name_arrival = models.TextField()
-#     address = models.TextField()
-#
-#     hotel = models.ForeignKey(Hotel, related_name="hotel", null=True, on_delete=models.SET_NULL)
-#
-#     def __str__(self):
-#         return self.name_arrival
-#
+    def __str__(self):
+        return self.name_hotel
+
+
+class Transport(ModelBase):
+    name_transport = models.TextField()
+    seat = models.IntegerField()
+
+    def __str__(self):
+        return self.name_transport
+
+
+class Arrival(ModelBase):
+    name_arrival = models.TextField()
+    address = models.TextField()
+
+    hotel = models.ForeignKey(Hotel, related_name="hotel", null=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return self.name_arrival
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
