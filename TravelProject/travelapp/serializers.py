@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from .models import User, Tour, Category, Tag, Comment, Rating, TourView,Action, \
-    Hotel, Transport, Arrival, TourGuide,Department
+from .models import User, Tour, Category, Comment, Rating, TourView,Action, \
+    Hotel, Transport, Arrival, TourGuide,Department,Article
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -84,18 +85,11 @@ class TourSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ['id','name_tour', 'created_date', 'updated_date', 'address', 'hotels', 'tourguide', 'arrivals'
-            , 'imageTour']
-
-
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = '__all__'
+        fields = ['id','name_tour', 'created_date', 'updated_date','address', 'hotels', 'tourguide', 'arrivals'
+            , 'imageTour','price']
 
 
 class TourDetailSerializer(TourSerializer):
-    tags = TagSerializer(many=True)
     rate = SerializerMethodField()
 
     def get_rate(self, tour):
@@ -109,7 +103,7 @@ class TourDetailSerializer(TourSerializer):
 
     class Meta:
         model = TourSerializer.Meta.model
-        fields = TourSerializer.Meta.fields + [ 'tags', "rate"]
+        fields = TourSerializer.Meta.fields + ["rate"]
 
 
 class RatingSerializer(ModelSerializer):
@@ -130,6 +124,13 @@ class ActionSerializer(ModelSerializer):
         fields = ["id", "type", "created_date"]
 
 
+# serializer cho bai viet
+class ArticalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Article
+        fields = "__all__"
+
+
 class CommentSerializer(ModelSerializer):
     creator = SerializerMethodField()
 
@@ -139,4 +140,5 @@ class CommentSerializer(ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'content', 'created_date', 'updated_date', 'creator']
+
 
